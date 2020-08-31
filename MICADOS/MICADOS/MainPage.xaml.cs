@@ -14,5 +14,21 @@ namespace MICADOS
         {
             InitializeComponent();
         }
+        public void Bouton_depense(object sender, EventArgs e)
+        {
+
+        }
+        public void Bouton_recette(object sender, EventArgs e)
+        {
+
+        }
+        public void Bouton_tresorerie(object sender, EventArgs e)
+        {
+
+        }
+        public void Bouton_stocks(object sender, EventArgs e)
+        {
+
+        }
     }
 }
