@@ -11,6 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TabbedPage1.xaml.cs" />
+    <Compile Remove="TabbedPage2.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="TabbedPage1.xaml" />
+    <EmbeddedResource Remove="TabbedPage2.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.1141" />
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
   </ItemGroup>
