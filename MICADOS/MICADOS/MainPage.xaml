@@ -13,17 +13,38 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <ListView x:Name="itemsDepenses"/>
+            <Frame OutlineColor="Black">
+                <ListView x:Name="itemsRecettes" ItemTapped="itemsRecettes_ItemTapped"/>
+            </Frame>
+
             <Grid Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                <Frame OutlineColor="Black">
+                    <ListView x:Name="itemsVenteEnCours"/>
+                </Frame>
+                <Frame OutlineColor="Black" Grid.Row="1">
+                    <Label x:Name="AutreVenteEnCours" Text="Autre (euros)"></Label>
+                </Frame>
+                <Frame OutlineColor="Black" Grid.Row="2">
+                    <Label x:Name="PrixVenteEnCours" Text="Prix total (euros)"></Label>
+                </Frame>
+                <Frame OutlineColor="Black" Grid.Row="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Text="Banque"/>
+                        <Button Grid.Column="1" Text="Caisse"/>
+                        <Button Grid.Column="2" Text="Don"/>
+                    </Grid>
+                </Frame>
                 <ContentView/>
 
             </Grid>
