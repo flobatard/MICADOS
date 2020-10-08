@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -12,35 +14,51 @@ namespace MICADOS
 {
     public partial class MainPage : TabbedPage
     {
+        private ListeMarchandises achetables, commandesEnCours;
+        ObservableCollection<string> menuAchetables, menuCommandeEnCours;
         public MainPage()
         {
             InitializeComponent();
             string tag = "micados";
-            ObservableCollection<string> itemList;
-            itemList = new ObservableCollection<string>();
-            itemList.Add("je suis à vendre !");
-            itemsRecettes.ItemsSource = itemList;
-            Marchandise m = new Marchandise("coca", 1.2, 4);
-            List<Marchandise> l = new List<Marchandise>();
-            l.Add(m);
-            ListeMarchandises lm = new ListeMarchandises(l);
-            lm.SaveMarchandises();
-            Log.Warning(tag, lm.toString());
-            ListeMarchandises listmar = new ListeMarchandises();
-            listmar.ReadMarchandises();
-            ObservableCollection<string> cocalist = new ObservableCollection<string>();
-            for(int i = 0; i < listmar.listM.Count; i++)
-            {
-                cocalist.Add(listmar.listM[i].nom);
-            }
-            Log.Warning(tag, listmar.toString());
-            itemsRecettes.ItemsSource = cocalist;
+            achetables = new ListeMarchandises();
+            commandesEnCours = new ListeMarchandises();
+            achetables.ReadMarchandises();
+            achetables.addMarchandise(new Marchandise("oasis", 1.2, 5));
+
+            /// Log.Warning(tag, achetables.toString());
+
+            menuAchetables = new ObservableCollection<string>();
+            Log.Warning(tag, menuAchetables.Count().ToString());
+            FillMenu(ref menuAchetables, ref achetables);
+            itemsRecettes.ItemsSource = menuAchetables;
+
+            menuCommandeEnCours = new ObservableCollection<string>();
+            FillMenu(ref menuAchetables, ref achetables);
+            Log.Warning(tag, achetables.toString());
+            itemsRecettes.ItemsSource = menuAchetables;
         }
 
-        private void itemsRecettes_itemtapped(object sender, FocusEventArgs e)
+        private void FillMenu(ref ObservableCollection<string> menu, ref ListeMarchandises l)
         {
-            /// TODO
-            /// itemsVenteEnCours.ItemsSource
+            menu = new ObservableCollection<string>();
+            for (int i = 0; i < l.listM.Count; i++)
+            {
+                menu.Add(l.listM[i].nom);
+            }
+        }
+        private void AddToMenu(ref ObservableCollection<string> menu, Marchandise l)
+        {
+            if (!menu.Contains(l.nom))
+            {
+                menu.Add(l.nom);
+            }
+        }
+
+        private void itemsRecettes_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            Debug.WriteLine("item tapped : " + e.ItemIndex.ToString());
+            AddToMenu(ref menuCommandeEnCours, achetables.listM[e.ItemIndex]);
+            itemsVenteEnCours.ItemsSource = menuCommandeEnCours;
         }
     }
 }
