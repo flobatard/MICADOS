@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Xml;
 using System.Data;
 using Xamarin.Forms.Markup;
+using System.Threading;
 
 namespace MICADOS
 {
@@ -30,9 +31,13 @@ namespace MICADOS
             prix = float.Parse(p, CultureInfo.InvariantCulture.NumberFormat);
         }
 
-        public string toString()
+        public string toString(bool full=false)
         {
-            return ("nom : " + nom + ", prix : " + prix + ", stock : " + stock);
+            if (full)
+            {
+                return (nom + " " + Math.Round(prix, 2) + "€ (" + stock + " en stock)");
+            }
+            else return nom;
         }
 
     }
@@ -49,12 +54,40 @@ namespace MICADOS
             }
         }
 
-        public string toString()
+        public string[] toStringArray(bool full=false)
+        {
+            string[] ret = new string[listM.Count()];
+            for (int i = 0; i < listM.Count(); i++)
+            {
+                ret[i] = listM[i].toString(full);
+            }
+            return ret;
+        }
+        public List<string> toStringList(bool full=false)
+        {
+            List<string> ret = new List<string>();
+            for (int i = 0; i < listM.Count(); i++)
+            {
+                ret.Add(listM[i].toString(full));
+            }
+            return ret;
+        }
+
+        public double PrixTotal()
+        {
+            double prix = 0;
+            for(int i = 0; i < listM.Count; i++)
+            {
+                prix = prix + listM[i].prix;
+            }
+            return Math.Round(prix, 2);
+        }
+        public string toString(bool full=false)
         {
             string ret = "";
-            for(int i = 0 ; i < listM.Count; i++)
+            for (int i = 0; i < listM.Count; i++)
             {
-                ret = ret + listM[i].toString() + "\n";
+                ret = ret + listM[i].toString(full) + "\n";
             }
             return ret;
         }
@@ -67,19 +100,19 @@ namespace MICADOS
         public void ReadMarchandises()
         {
             var dataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "data.micados");
-            using (var reader = new StreamReader(dataPath, true))
+            if (File.Exists(dataPath)) 
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+
+                using (var reader = new StreamReader(dataPath, true))
                 {
-                    string[] mar = line.Split(',');
-                    string n = mar[0];
-                    string p = mar[1];
-                    string s = mar[2];
-                    listM.Add(new Marchandise(n, p, s));
-                    for(int i = 0; i < listM.Count; i++)
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        Xamarin.Forms.Internals.Log.Warning("micados", listM[i].ToString());
+                        string[] mar = line.Split(',');
+                        string n = mar[0];
+                        string p = mar[1];
+                        string s = mar[2];
+                        listM.Add(new Marchandise(n, p, s));
                     }
                 }
 

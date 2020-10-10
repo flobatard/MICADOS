@@ -19,19 +19,67 @@
 
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Frame OutlineColor="Black">
+                    <ListView x:Name="itemsVenteEnCours"/>
+                </Frame>
+                <Frame OutlineColor="Black" Grid.Row="1" Padding="20,2">
+                    <Entry x:Name="Autres" FontSize="Micro" Keyboard="Numeric" Placeholder="0.0" Text="" TextChanged="Autres_TextChanged"></Entry>
+                </Frame>
+                <Frame OutlineColor="Black" Grid.Row="2" Padding="20,2">
+                    <Entry x:Name="Commentaires" FontSize="Micro" Keyboard="Default" Placeholder="Commentaires"></Entry>
+                </Frame>
+                <Frame OutlineColor="Black" Grid.Row="3" Padding="20,2" VerticalOptions="Center">
+                    <Label x:Name="PrixVenteEnCours" FontSize="Micro" Text="Prix total (euros)" VerticalOptions="CenterAndExpand"></Label>
+                </Frame>
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button FontSize="Micro" Text="Banque" Padding="20,2"/>
+                    <Button Grid.Column="1" FontSize="Micro" Text="Caisse" Padding="20,2"/>
+                    <Button Grid.Column="2"  FontSize="Micro" Text="Don" Padding="20,2"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </ContentPage>
+
+    <ContentPage Title="Dépenses">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Frame OutlineColor="Black">
+                <ListView x:Name="itemsDepenses" ItemTapped="itemsDepenses_ItemTapped"/>
+            </Frame>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
                     <RowDefinition Height="5*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Frame OutlineColor="Black">
-                    <ListView x:Name="itemsVenteEnCours"/>
+                    <ListView x:Name="itemsAchatEnCours"/>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="1">
-                    <Label x:Name="AutreVenteEnCours" Text="Autre (euros)"></Label>
+                    <Label x:Name="AutreAchatEnCours" Text="Autre (euros)"></Label>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="2">
-                    <Label x:Name="PrixVenteEnCours" Text="Prix total (euros)"></Label>
+                    <Label x:Name="PrixAchatEnCours" Text="Prix total (euros)"></Label>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="3">
                     <Grid>
@@ -49,9 +97,6 @@
 
             </Grid>
         </Grid>
-    </ContentPage>
-
-    <ContentPage Title="Dépenses">
 
     </ContentPage>
 
