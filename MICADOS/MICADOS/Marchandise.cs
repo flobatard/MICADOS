@@ -12,16 +12,20 @@ using System.Threading;
 
 namespace MICADOS
 {
-    class Marchandise
+    public class Marchandise
     {
-        public string nom;
-        public double prix;
-        public int stock;
+        public string nom { get; set; }
+        public double prix { get; set; }
+        public int stock { get; set; }
+        public string prixstring { get; set; }
+        public Guid id;
         public Marchandise(string n, double p, int s)
         {
             nom = n;
             prix = p;
+            prixstring = Math.Round(prix, 2).ToString();
             stock = s;
+            id = Guid.NewGuid();
         }
 
         public Marchandise(string n, string p, string s)
@@ -29,6 +33,8 @@ namespace MICADOS
             nom = n;
             stock = Int32.Parse(s);
             prix = float.Parse(p, CultureInfo.InvariantCulture.NumberFormat);
+            prixstring = p;
+            id = Guid.NewGuid();
         }
 
         public string toString(bool full=false)
@@ -37,11 +43,15 @@ namespace MICADOS
             {
                 return (nom + " " + Math.Round(prix, 2) + "€ (" + stock + " en stock)");
             }
-            else return nom;
+            else return nom + " (" + Math.Round(prix, 2) + "€)";
+        }
+        public string log()
+        {
+            return (nom + " (" + Math.Round(prix, 2) + " €)");
         }
 
     }
-    class ListeMarchandises
+    public class ListeMarchandises
     {
         public List<Marchandise> listM = new List<Marchandise>();
 
@@ -92,6 +102,16 @@ namespace MICADOS
             return ret;
         }
 
+        public string log()
+        {
+            string ret = "";
+            for (int i = 0; i < listM.Count; i++)
+            {
+                ret = ret + listM[i].log() + "\n";
+            }
+            return ret;
+        }
+
         public void addMarchandise(Marchandise m)
         {
             listM.Add(m);
@@ -128,6 +148,17 @@ namespace MICADOS
                     writer.WriteLine(listM[i].nom.ToString() + "," + listM[i].prix.ToString() + "," + (string)listM[i].stock.ToString());
                 }
             }
+        }
+        public int getIndexGuid(Guid i)
+        {
+            for(int j =0; j < listM.Count(); j++)
+            {
+                if(listM[j].id.CompareTo(i) == 0)
+                {
+                    return j;
+                }
+            }
+            return -1;
         }
     }
 }

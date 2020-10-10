@@ -14,7 +14,25 @@
             </Grid.RowDefinitions>
 
             <Frame OutlineColor="Black">
-                <ListView x:Name="itemsRecettes" ItemTapped="itemsRecettes_ItemTapped"/>
+                <ListView x:Name="itemsRecettes" ItemTapped="itemsRecettes_ItemTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding nom}" FontSize="Large"/>
+                                    <StackLayout Grid.Column="1" Orientation="Vertical">
+                                        <Label Text="{Binding prixstring}"/>
+                                        <Label Text="{Binding stock}"/>
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Frame>
 
             <Grid Grid.Column="1">
@@ -26,7 +44,20 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Frame OutlineColor="Black">
-                    <ListView x:Name="itemsVenteEnCours"/>
+                    <ListView x:Name="itemsVenteEnCours"  ItemTapped="itemsVenteEnCours_ItemTapped">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding nom}" FontSize="Large"/>
+                                        <StackLayout Orientation="Vertical">
+                                            <Label Text="{Binding prixstring}"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="1" Padding="20,2">
                     <Entry x:Name="Autres" FontSize="Micro" Keyboard="Numeric" Placeholder="0.0" Text="" TextChanged="Autres_TextChanged"></Entry>
@@ -43,9 +74,9 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button FontSize="Micro" Text="Banque" Padding="20,2"/>
-                    <Button Grid.Column="1" FontSize="Micro" Text="Caisse" Padding="20,2"/>
-                    <Button Grid.Column="2"  FontSize="Micro" Text="Don" Padding="20,2"/>
+                    <Button FontSize="Micro" Text="Banque" Padding="20,2" Clicked="Vente_Banque_Clicked"/>
+                    <Button Grid.Column="1" FontSize="Micro" Text="Caisse" Padding="20,2" Clicked="Vente_Caisse_Clicked"/>
+                    <Button Grid.Column="2"  FontSize="Micro" Text="Don" Padding="20,2" Clicked="Vente_Don_Clicked"/>
                 </Grid>
             </Grid>
         </Grid>
@@ -102,6 +133,20 @@
 
     <ContentPage Title="Trésorerie">
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label x:Name="SoldeBanque" Text="0.0"/>
+            <Label Grid.Column="1" x:Name="SoldeCaisse" Text="0.0"/>
+            <Editor IsReadOnly="true"  Grid.Row="1" x:Name="logs" Text=""/>
+        </Grid>
+        
     </ContentPage>
     <ContentPage Title="Stocks">
 
