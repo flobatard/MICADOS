@@ -18,13 +18,20 @@ namespace MICADOS
         public double prix { get; set; }
         public int stock { get; set; }
         public string prixstring { get; set; }
+        public int vente { get; set; }
+        public int achat { get; set; }
+        public int dispo { get; set; }
+
         public Guid id;
         public Marchandise(string n, double p, int s)
         {
             nom = n;
             prix = p;
-            prixstring = Math.Round(prix, 2).ToString();
+            prixstring = Math.Round(prix, 2).ToString() + "€";
             stock = s;
+            vente = 0;
+            achat = 0;
+            dispo = 0;
             id = Guid.NewGuid();
         }
 
@@ -33,23 +40,48 @@ namespace MICADOS
             nom = n;
             stock = Int32.Parse(s);
             prix = float.Parse(p, CultureInfo.InvariantCulture.NumberFormat);
-            prixstring = p;
+            prixstring = p + "€";
+            vente = 0;
+            achat = 0;
+            dispo = 0;
             id = Guid.NewGuid();
         }
 
         public string toString(bool full=false)
         {
+            string ret = "";
+            ret += nom + " (" + Math.Round(prix, 2) + "€)\n";
             if (full)
             {
-                return (nom + " " + Math.Round(prix, 2) + "€ (" + stock + " en stock)");
+                ret += stock + " en stock\n" + dispo.ToString() + " dispos\n" + achat + " vont être achetés\n" + vente + " vont être vendus.";
             }
-            else return nom + " (" + Math.Round(prix, 2) + "€)";
+            return ret;
         }
-        public string log()
+        public string log(bool achat = false)
         {
-            return (nom + " (" + Math.Round(prix, 2) + " €)");
+            if (achat)
+            { 
+                return (vente.ToString() + nom + " (" + Math.Round(prix, 2) + " €)");
+            }
+            else{
+                return (achat.ToString() + nom + " (" + Math.Round(prix, 2) + " €)");
+            }
         }
-
+        public void UpdateDispo()
+        {
+            dispo = stock + achat - vente;
+        }
+        public void reset()
+        {
+            achat = 0;
+            vente = 0;
+            dispo = 0;
+        }
+        public void DoTransaction()
+        {
+            stock = dispo;
+            reset();
+        }
     }
     public class ListeMarchandises
     {
@@ -61,6 +93,14 @@ namespace MICADOS
             for(int i = 0; i < l.Count; i++)
             {
                 listM.Add(l[i]);
+            }
+        }
+
+        public void UpdateDispos()
+        {
+            for(int i = 0; i < listM.Count(); i++)
+            {
+                listM[i].UpdateDispo();
             }
         }
 
@@ -83,14 +123,26 @@ namespace MICADOS
             return ret;
         }
 
-        public double PrixTotal()
+        public double PrixTotal(bool achat)
         {
-            double prix = 0;
-            for(int i = 0; i < listM.Count; i++)
+            if (achat)
             {
-                prix = prix + listM[i].prix;
+                double prix = 0;
+                for(int i = 0; i < listM.Count; i++)
+                {
+                    prix = prix + listM[i].prix * listM[i].achat;
+                }
+                return Math.Round(prix, 2);
             }
-            return Math.Round(prix, 2);
+            else
+            {
+                double prix = 0;
+                for (int i = 0; i < listM.Count; i++)
+                {
+                    prix = prix + listM[i].prix * listM[i].vente;
+                }
+                return Math.Round(prix, 2);
+            }
         }
         public string toString(bool full=false)
         {
@@ -159,6 +211,20 @@ namespace MICADOS
                 }
             }
             return -1;
+        }
+        public void ResetAll()
+        {
+            for(int i = 0; i < listM.Count(); i++)
+            {
+                listM[i].reset();
+            }
+        }
+        public void DoTransaction()
+        {
+            for(int i = 0; i < listM.Count(); i++)
+            {
+                listM[i].DoTransaction();
+            }
         }
     }
 }

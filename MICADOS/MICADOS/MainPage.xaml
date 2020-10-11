@@ -25,8 +25,8 @@
                                     </Grid.ColumnDefinitions>
                                     <Label Text="{Binding nom}" FontSize="Large"/>
                                     <StackLayout Grid.Column="1" Orientation="Vertical">
-                                        <Label Text="{Binding prixstring}"/>
-                                        <Label Text="{Binding stock}"/>
+                                        <Label Text="{Binding prixstring}" HorizontalTextAlignment="End"/>
+                                        <Label Text="{Binding dispo}" HorizontalTextAlignment="End"/>
                                     </StackLayout>
                                 </Grid>
                             </ViewCell>
@@ -48,22 +48,27 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="{Binding nom}" FontSize="Large"/>
-                                        <StackLayout Orientation="Vertical">
-                                            <Label Text="{Binding prixstring}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding nom}" FontSize="Large" HorizontalTextAlignment="End"/>
+                                        <StackLayout Grid.Column="1">
+                                            <Label Text="{Binding prixstring}" HorizontalTextAlignment="End"/>
+                                            <Label Text="{Binding vente}" HorizontalTextAlignment="End"/>
                                         </StackLayout>
-                                    </StackLayout>
+                                    </Grid>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="1" Padding="20,2">
-                    <Entry x:Name="Autres" FontSize="Micro" Keyboard="Numeric" Placeholder="0.0" Text="" TextChanged="Autres_TextChanged"></Entry>
+                    <Entry x:Name="AutresVente" FontSize="Micro" Keyboard="Numeric" Placeholder="0.0" Text="" TextChanged="AutresVente_TextChanged"></Entry>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="2" Padding="20,2">
-                    <Entry x:Name="Commentaires" FontSize="Micro" Keyboard="Default" Placeholder="Commentaires"></Entry>
+                    <Entry x:Name="CommentairesVente" FontSize="Micro" Keyboard="Default" Placeholder="CommentairesVente"></Entry>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="3" Padding="20,2" VerticalOptions="Center">
                     <Label x:Name="PrixVenteEnCours" FontSize="Micro" Text="Prix total (euros)" VerticalOptions="CenterAndExpand"></Label>
@@ -93,42 +98,75 @@
             </Grid.RowDefinitions>
 
             <Frame OutlineColor="Black">
-                <ListView x:Name="itemsDepenses" ItemTapped="itemsDepenses_ItemTapped"/>
+                <ListView x:Name="itemsDepenses" ItemTapped="itemsDepenses_ItemTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding nom}" FontSize="Large"/>
+                                    <StackLayout Grid.Column="1" Orientation="Vertical">
+                                        <Label Text="{Binding dispo}" HorizontalTextAlignment="End"/>
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Frame>
 
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Frame OutlineColor="Black">
-                    <ListView x:Name="itemsAchatEnCours"/>
+                    <ListView x:Name="itemsDepenseEnCours"  ItemTapped="itemsDepenseEnCours_ItemTapped">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding nom}" FontSize="Large" HorizontalTextAlignment="End"/>
+                                        <StackLayout Grid.Column="1">
+                                            <Label Text="{Binding achat}" HorizontalTextAlignment="End"/>
+                                        </StackLayout>
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Frame>
-                <Frame OutlineColor="Black" Grid.Row="1">
-                    <Label x:Name="AutreAchatEnCours" Text="Autre (euros)"></Label>
+                <Frame OutlineColor="Black" Grid.Row="1" Padding="20,2">
+                    <Entry x:Name="AutresDepense" FontSize="Micro" Keyboard="Numeric" Placeholder="0.0" Text="" TextChanged="AutresDepense_TextChanged"></Entry>
                 </Frame>
-                <Frame OutlineColor="Black" Grid.Row="2">
-                    <Label x:Name="PrixAchatEnCours" Text="Prix total (euros)"></Label>
+                <Frame OutlineColor="Black" Grid.Row="2" Padding="20,2">
+                    <Entry x:Name="CommentairesDepense" FontSize="Micro" Keyboard="Default" Placeholder="Commentaires"></Entry>
                 </Frame>
-                <Frame OutlineColor="Black" Grid.Row="3">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Button Text="Banque"/>
-                        <Button Grid.Column="1" Text="Caisse"/>
-                        <Button Grid.Column="2" Text="Don"/>
-                    </Grid>
+                <Frame OutlineColor="Black" Grid.Row="3" Padding="20,2" VerticalOptions="Center">
+                    <Entry x:Name="PrixDepenseEnCours" FontSize="Micro" Text="Prix total (euros)" VerticalOptions="CenterAndExpand"></Entry>
                 </Frame>
-                <ContentView/>
-
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button FontSize="Micro" Text="Banque" Padding="20,2" Clicked="Depense_Banque_Clicked"/>
+                    <Button Grid.Column="1" FontSize="Micro" Text="Caisse" Padding="20,2" Clicked="Depense_Caisse_Clicked"/>
+                    <Button Grid.Column="2"  FontSize="Micro" Text="Don" Padding="20,2" Clicked="Depense_Don_Clicked"/>
+                </Grid>
             </Grid>
         </Grid>
-
     </ContentPage>
 
     <ContentPage Title="Trésorerie">
