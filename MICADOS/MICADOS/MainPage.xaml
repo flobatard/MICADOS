@@ -273,7 +273,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </Frame>
-            <Frame Grid.Column="1">
+            <Frame x:Name="GrilleAjout" Grid.Column="1">
                 <StackLayout>
                     <Entry x:Name="NomProduitAjoute" Text="" Placeholder="Nom du produit"/>
                     <Entry x:Name="PrixProduitAjoute" Text="" Keyboard="Numeric" Placeholder="Prix"/>
@@ -284,7 +284,15 @@
         </Grid>
     </ContentPage>
     <ContentPage Title="Logs">
-        <Editor Grid.Row="5" IsReadOnly="true" x:Name="logs" Text=""/>
+        <Grid VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ScrollView>
+                <Editor Grid.Row="5" IsReadOnly="true" x:Name="logs" Text=""/>
+            </ScrollView>
+            <Button x:Name="export" Text="Exporter" HorizontalOptions="End" VerticalOptions="End" Clicked="export_Clicked"/>
+        </Grid>
     </ContentPage>
 
 </TabbedPage>

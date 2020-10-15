@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using Xamarin.Essentials;
 
 namespace MICADOS
 {
@@ -19,8 +21,20 @@ namespace MICADOS
     {
         private ListeMarchandises Achetables, CommandesEnCours, DepensesEnCours;
         private Comptes C;
+        StreamWriter LogFile;
         public MainPage()
         {
+            var LogPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "logs_micados.csv");
+            if (File.Exists(LogPath))
+            {
+                LogFile = File.AppendText(LogPath);
+            }
+            else
+            {
+                LogFile = File.AppendText(LogPath);
+                LogFile.WriteLine("Date:Type:Autre dépense:Commentaire autre dépense:Prix total:Destination:Marchandise ->");
+                LogFile.Flush();
+            }
             InitializeComponent();
             string tag = "micados";
             Achetables = new ListeMarchandises();
@@ -90,34 +104,61 @@ namespace MICADOS
             if (achat)
             {
                 string prixachat = (PrixDepenseEnCours.Text.Length != 0) ? PrixDepenseEnCours.Text : "0";
-                string log = "\n---------------------\n" +
+                string logApp = "\n---------------------\n" +
                     "dépense le " + DateTime.Now.ToString() +
-                    "\n" + DepensesEnCours.log(achat) +
-                    "\nplus " + AutresDepense.Text  + "€" +
+                    "\n" + DepensesEnCours.log(achat, true) +
+                    "\nplus " + AutresDepense.Text + "€" +
                     "\nCommentaire : " + CommentairesDepense.Text +
                     "\nTotal : " + prixachat + "€ à " + destination + "\n\n";
-                logs.Text += log;
+                logs.Text += logApp;
+                string log =
+                    DateTime.Now.ToString() + ":" +
+                    "achat" + ":" +
+                    AutresDepense.Text + ":" +
+                    CommentairesDepense.Text + ":" +
+                    prixachat + ":" +
+                    destination + ":" +
+                    DepensesEnCours.log(achat) ;
+                LogFile.WriteLine(log);
+                LogFile.Flush();
             }
             else
             {
                 string prixvente = (PrixVenteEnCours.Text.Length != 0) ? PrixVenteEnCours.Text : "0";
-                string log = "\n---------------------\n" +
+                string logApp = "\n---------------------\n" +
                     "vente le " + DateTime.Now.ToString() +
-                    "\n" + CommandesEnCours.log(achat) +
+                    "\n" + CommandesEnCours.log(achat, true) +
                     "\nplus " + AutresVente.Text + "€" +
                     "\nCommentaire : " + CommentairesVente.Text +
                     "\nTotal : " + (prixvente + " € à " + destination + "\n\n");
-                logs.Text += log;
+                logs.Text += logApp;
+                string log = 
+                    DateTime.Now.ToString() + ":" + 
+                    "vente" + 
+                    AutresVente.Text + ":" +
+                    CommentairesVente.Text + ":" +
+                    prixvente + ":" + destination + ":" +
+                    CommandesEnCours.log(achat);
+                LogFile.WriteLine(log);
+                LogFile.Flush();
             }
         }
         private void DoLogsTransaction(string from, string to)
         {
-            string log = "\n---------------------\n" +
+            string logApp = "\n---------------------\n" +
                 "transaction le " + DateTime.Now.ToString() +
                 "\nde " + from + " à " + to +
                 "\nCommentaire : " + CommentairesDepense.Text +
                 "\nValeur : " + MontantTransaction.Text + "€\n\n";
-            logs.Text += log;
+            logs.Text += logApp;
+            string log =
+                DateTime.Now.ToString() + ":" +
+                from + ":" +
+                to + ":" +
+                CommentairesDepense.Text + ":" +
+                MontantTransaction.Text + "\n";
+            LogFile.WriteLine(log);
+            LogFile.Flush();
         }
 
         private void DoTransaction(string type, bool achat=false)
@@ -345,7 +386,6 @@ namespace MICADOS
         }
         private void EnregistrerTransaction_Clicked(object sender, EventArgs e)
         {
-            Log.Warning("micados", "-" + Compte1.SelectedItem.ToString() + "-");
             switch (Compte1.SelectedItem.ToString())
             {
                 case "Banque":
@@ -364,18 +404,28 @@ namespace MICADOS
                     C.caisse += Math.Round(float.Parse(MontantTransaction.Text.Replace(',', '.'), CultureInfo.InvariantCulture.NumberFormat), 2);
                     break;
             }
-            Log.Warning("micados", C.banque.ToString());
             DoLogsTransaction(Compte1.SelectedItem.ToString(), Compte2.SelectedItem.ToString());
             cleanTresorerie();
             C.SaveComptes();
             UpdateAll();
         }
 
+
         private void Ajoute_Clicked(object sender, EventArgs e)
         {
-            Achetables.addMarchandise(new Marchandise(NomProduitAjoute.Text, Math.Round(float.Parse(PrixProduitAjoute.Text.Replace(',', '.'), CultureInfo.InvariantCulture.NumberFormat), 2), 0));
-            Achetables.SaveMarchandises();
-            UpdateAll();
+            if(PrixProduitAjoute.Text.Length > 0 && NomProduitAjoute.Text.Length > 0)
+            {
+                Achetables.addMarchandise(new Marchandise(NomProduitAjoute.Text, Math.Round(float.Parse(PrixProduitAjoute.Text.Replace(',', '.'), CultureInfo.InvariantCulture.NumberFormat), 2), 0));
+                Achetables.SaveMarchandises();
+                GrilleAjout.BorderColor = Color.Black;
+                ErreurAjout.Text = "";
+                UpdateAll();
+            }
+            else
+            {
+                GrilleAjout.BorderColor = Color.Red;
+                ErreurAjout.Text = "erreur dans le nom ou dans le prix";
+            }
         }
 
         private void itemsAjoute_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -384,6 +434,14 @@ namespace MICADOS
             else ErreurAjout.Text = "Erreur : retrait d'une marchandise dont le stock est non nul";
             Achetables.SaveMarchandises();
             UpdateAll();
+        }
+        private void export_Clicked(object sender, EventArgs e)
+        {
+            Share.RequestAsync(new ShareFileRequest
+            {
+                Title = Title,
+                File = new ShareFile(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "logs_micados.csv"))
+            });
         }
     }
 }

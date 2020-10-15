@@ -9,6 +9,7 @@ using System.Xml;
 using System.Data;
 using Xamarin.Forms.Markup;
 using System.Threading;
+using Xamarin.Forms.Internals;
 
 namespace MICADOS
 {
@@ -39,7 +40,7 @@ namespace MICADOS
         {
             nom = n;
             stock = Int32.Parse(s);
-            prix = float.Parse(p, CultureInfo.InvariantCulture.NumberFormat);
+            prix = float.Parse(p.Replace(',','.'), CultureInfo.InvariantCulture.NumberFormat);
             prixstring = p + "€";
             vente = 0;
             achat = 0;
@@ -154,12 +155,13 @@ namespace MICADOS
             return ret;
         }
 
-        public string log(bool achat=false)
+        public string log(bool achat=false, bool readable=false)
         {
+            char sep = (readable) ? '\n' : ';';
             string ret = "";
             for (int i = 0; i < listM.Count; i++)
             {
-                ret = ret + listM[i].log(achat) + "\n";
+                ret = ret + listM[i].log(achat) + sep;
             }
             return ret;
         }
@@ -180,7 +182,7 @@ namespace MICADOS
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
-                        string[] mar = line.Split(',');
+                        string[] mar = line.Split(';');
                         string n = mar[0];
                         string p = mar[1];
                         string s = mar[2];
@@ -197,7 +199,7 @@ namespace MICADOS
             {
                 for (int i = 0; i < listM.Count; i++)
                 {
-                    writer.WriteLine(listM[i].nom.ToString() + "," + listM[i].prix.ToString() + "," + (string)listM[i].stock.ToString());
+                    writer.WriteLine(listM[i].nom.ToString() + ";" + Math.Round(listM[i].prix, 2).ToString() + ";" + listM[i].stock.ToString());
                 }
             }
         }
