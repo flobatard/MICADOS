@@ -42,6 +42,7 @@
                     <RowDefinition Height="3*"/>
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Frame OutlineColor="Black">
                     <ListView x:Name="itemsVenteEnCours"  ItemTapped="itemsVenteEnCours_ItemTapped">
@@ -65,13 +66,13 @@
                     </ListView>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="1" Padding="20,2">
-                    <Entry x:Name="AutresVente" FontSize="Micro" Keyboard="Numeric" Placeholder="0.0" Text="" TextChanged="AutresVente_TextChanged"></Entry>
+                    <Entry x:Name="AutresVente" FontSize="Micro" Keyboard="Numeric" Placeholder="Don (€)" Text="" TextChanged="AutresVente_TextChanged"></Entry>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="2" Padding="20,2">
-                    <Entry x:Name="CommentairesVente" FontSize="Micro" Keyboard="Default" Placeholder="CommentairesVente"></Entry>
+                    <Entry x:Name="CommentairesVente" FontSize="Micro" Keyboard="Default" Placeholder="Commentaires"></Entry>
                 </Frame>
-                <Frame OutlineColor="Black" Grid.Row="3" Padding="20,2" VerticalOptions="Center">
-                    <Label x:Name="PrixVenteEnCours" FontSize="Micro" Text="Prix total (euros)" VerticalOptions="CenterAndExpand"></Label>
+                <Frame OutlineColor="Black" Grid.Row="3" Padding="20,2">
+                    <Label x:Name="PrixVenteEnCours" FontSize="Micro" Text="" VerticalOptions="CenterAndExpand"/>
                 </Frame>
                 <Grid Grid.Row="4">
                     <Grid.ColumnDefinitions>
@@ -81,8 +82,9 @@
                     </Grid.ColumnDefinitions>
                     <Button FontSize="Micro" Text="Banque" Padding="20,2" Clicked="Vente_Banque_Clicked"/>
                     <Button Grid.Column="1" FontSize="Micro" Text="Caisse" Padding="20,2" Clicked="Vente_Caisse_Clicked"/>
-                    <Button Grid.Column="2"  FontSize="Micro" Text="Don" Padding="20,2" Clicked="Vente_Don_Clicked"/>
+                    <Button Grid.Column="2"  FontSize="Micro" Text="Gratuit" Padding="20,2" Clicked="Vente_Don_Clicked"/>
                 </Grid>
+                <Label Grid.Row="5" x:Name="ErreurVente" Text="" TextColor="Red"/>
             </Grid>
         </Grid>
     </ContentPage>
@@ -146,14 +148,14 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </Frame>
-                <Frame OutlineColor="Black" Grid.Row="1" Padding="20,2">
+                <Frame x:Name="CadreAutreDepense" OutlineColor="Black" Grid.Row="1" Padding="20,2">
                     <Entry x:Name="AutresDepense" FontSize="Micro" Keyboard="Numeric" Placeholder="0.0" Text="" TextChanged="AutresDepense_TextChanged"></Entry>
                 </Frame>
                 <Frame OutlineColor="Black" Grid.Row="2" Padding="20,2">
                     <Entry x:Name="CommentairesDepense" FontSize="Micro" Keyboard="Default" Placeholder="Commentaires"></Entry>
                 </Frame>
-                <Frame OutlineColor="Black" Grid.Row="3" Padding="20,2" VerticalOptions="Center">
-                    <Entry x:Name="PrixDepenseEnCours" FontSize="Micro" Text="Prix total (euros)" VerticalOptions="CenterAndExpand"></Entry>
+                <Frame x:Name="CadrePrixDepenseEnCours" OutlineColor="Black" Grid.Row="3" Padding="20,2" VerticalOptions="Center">
+                    <Entry x:Name="PrixDepenseEnCours" Keyboard="Numeric" FontSize="Micro" Text="" Placeholder="Prix total (€)" VerticalOptions="CenterAndExpand"></Entry>
                 </Frame>
                 <Grid Grid.Row="4">
                     <Grid.ColumnDefinitions>
@@ -170,24 +172,119 @@
     </ContentPage>
 
     <ContentPage Title="Trésorerie">
+        <StackLayout>
+            <Grid HeightRequest="150">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Label Text="Banque"/>
+                <Label Grid.Column="1" Text="Caisse"/>
+                <Frame Grid.Row="1" Padding="20,2">
+                    <Label x:Name="SoldeBanque" Text="0.0" VerticalOptions="CenterAndExpand"/>
+                </Frame>
+                <Frame Grid.Row="1" Grid.Column="1" Padding="20,2">
+                    <Label x:Name="SoldeCaisse" Text="0.0" VerticalOptions="CenterAndExpand"/>
+                </Frame>
+            </Grid>
+            <Frame>
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="1.5*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Label x:Name="SoldeBanque" Text="0.0"/>
-            <Label Grid.Column="1" x:Name="SoldeCaisse" Text="0.0"/>
-            <Editor IsReadOnly="true"  Grid.Row="1" x:Name="logs" Text=""/>
-        </Grid>
-        
+                    <Grid.ColumnDefinitions>
+                
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Transaction" FontSize="Title"/>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label Text="de"/>
+                            <Label Grid.Row="1" Text="à"/>
+                            <Picker x:Name="Compte1" Grid.Column="1" HorizontalOptions="FillAndExpand">
+                                <Picker.Items>
+                                    <x:String>Banque</x:String>
+                                    <x:String>Caisse</x:String>
+                                    <x:String>Don</x:String>
+                                </Picker.Items>
+                            </Picker>
+                            <Picker x:Name="Compte2" Grid.Column="1" Grid.Row="1" HorizontalOptions="FillAndExpand">
+                                <Picker.Items>
+                                    <x:String>Banque</x:String>
+                                    <x:String>Caisse</x:String>
+                                    <x:String>Don</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </Grid>
+                    </Grid>
+                    <Entry Grid.Row="2" x:Name="MontantTransaction" Keyboard="Numeric" Placeholder="Montant de la transaction" Text=""/>
+                    <Editor Grid.Row="3" x:Name="CommentairesTransaction" Text="" Placeholder="Commentaires de la transaction" HeightRequest="100"/>
+                    <Button Grid.Row="4" x:Name="EnregistrerTransaction" Text="Enregistrer" Clicked="EnregistrerTransaction_Clicked" Padding="20,2" HorizontalOptions="CenterAndExpand"/>
+                </Grid>
+            </Frame>
+        </StackLayout>
+
     </ContentPage>
     <ContentPage Title="Stocks">
-
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Frame OutlineColor="Black">
+                <ListView x:Name="itemsAjoute" ItemTapped="itemsAjoute_ItemTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding nom}" FontSize="Large"/>
+                                    <StackLayout Grid.Column="1" Orientation="Vertical">
+                                        <Label Text="{Binding prixstring}" HorizontalTextAlignment="End"/>
+                                        <Label Text="{Binding dispo}" HorizontalTextAlignment="End"/>
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Frame>
+            <Frame Grid.Column="1">
+                <StackLayout>
+                    <Entry x:Name="NomProduitAjoute" Text="" Placeholder="Nom du produit"/>
+                    <Entry x:Name="PrixProduitAjoute" Text="" Keyboard="Numeric" Placeholder="Prix"/>
+                    <Button x:Name="Ajoute" Text="Ajouter" Clicked="Ajoute_Clicked"/>
+                    <Label x:Name="ErreurAjout" Text="" TextColor="Red"/>
+                </StackLayout>
+            </Frame>
+        </Grid>
+    </ContentPage>
+    <ContentPage Title="Logs">
+        <Editor Grid.Row="5" IsReadOnly="true" x:Name="logs" Text=""/>
     </ContentPage>
 
 </TabbedPage>

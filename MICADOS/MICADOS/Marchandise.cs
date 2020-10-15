@@ -61,10 +61,10 @@ namespace MICADOS
         {
             if (achat)
             { 
-                return (vente.ToString() + nom + " (" + Math.Round(prix, 2) + " €)");
+                return (this.achat.ToString() + " " + nom + " (" + Math.Round(prix, 2) + " €)");
             }
             else{
-                return (achat.ToString() + nom + " (" + Math.Round(prix, 2) + " €)");
+                return (this.vente.ToString() + " " + nom + " (" + Math.Round(prix, 2) + " €)");
             }
         }
         public void UpdateDispo()
@@ -154,12 +154,12 @@ namespace MICADOS
             return ret;
         }
 
-        public string log()
+        public string log(bool achat=false)
         {
             string ret = "";
             for (int i = 0; i < listM.Count; i++)
             {
-                ret = ret + listM[i].log() + "\n";
+                ret = ret + listM[i].log(achat) + "\n";
             }
             return ret;
         }

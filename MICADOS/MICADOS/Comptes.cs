@@ -35,7 +35,7 @@ namespace MICADOS
                 }
             }
         }
-        public void SaveMarchandises()
+        public void SaveComptes()
         {
             var dataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "comptes.micados");
             using (var writer = File.CreateText(dataPath))
